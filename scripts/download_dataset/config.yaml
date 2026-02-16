@@ -1,0 +1,8 @@
+# Dataset download configuration
+# Edit this file to specify which datasets to download
+
+data_dir: "../../data/hugging_face"  # Relative to project root
+
+datasets:
+  - name: "nvidia/OpenMathReasoning"
+    subset: null  # No config required
