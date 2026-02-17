@@ -5,7 +5,7 @@ from pathlib import Path
 import tempfile
 import yaml
 
-from src.config import load_config, ConfigError, validate_sampler_config
+from src.config import load_config, ConfigError, validate_sampler_config, validate_filter_config
 
 
 class TestLoadConfig:
@@ -186,3 +186,156 @@ class TestValidateSamplerConfig:
             load_config(config_file, validator=validate_sampler_config)
 
         assert "dataset_name" in str(exc_info.value).lower()
+
+
+class TestValidateFilterConfig:
+    """Tests for validate_filter_config function."""
+
+    def test_valid_config_passes(self, tmp_path):
+        """Pass validation with all required fields."""
+        config_data = {
+            "input_data_dir": "../../data/hugging_face",
+            "output_data_dir": "../../data/processed",
+            "dataset_name": "di-zhang-fdu/AOPS",
+            "year_boundaries": {
+                "train_max_year": 2023,
+                "valid_year": 2024,
+                "test_min_year": 2025,
+            },
+        }
+        config_file = tmp_path / "config.yaml"
+        config_file.write_text(yaml.dump(config_data))
+
+        # Should not raise
+        result = load_config(config_file, validator=validate_filter_config)
+        assert result["dataset_name"] == "di-zhang-fdu/AOPS"
+
+    def test_missing_input_data_dir_raises(self, tmp_path):
+        """Raise error when input_data_dir is missing."""
+        config_data = {
+            "output_data_dir": "../../data/processed",
+            "dataset_name": "di-zhang-fdu/AOPS",
+            "year_boundaries": {
+                "train_max_year": 2023,
+                "valid_year": 2024,
+                "test_min_year": 2025,
+            },
+        }
+        config_file = tmp_path / "config.yaml"
+        config_file.write_text(yaml.dump(config_data))
+
+        with pytest.raises(ConfigError) as exc_info:
+            load_config(config_file, validator=validate_filter_config)
+
+        assert "input_data_dir" in str(exc_info.value).lower()
+
+    def test_missing_output_data_dir_raises(self, tmp_path):
+        """Raise error when output_data_dir is missing."""
+        config_data = {
+            "input_data_dir": "../../data/hugging_face",
+            "dataset_name": "di-zhang-fdu/AOPS",
+            "year_boundaries": {
+                "train_max_year": 2023,
+                "valid_year": 2024,
+                "test_min_year": 2025,
+            },
+        }
+        config_file = tmp_path / "config.yaml"
+        config_file.write_text(yaml.dump(config_data))
+
+        with pytest.raises(ConfigError) as exc_info:
+            load_config(config_file, validator=validate_filter_config)
+
+        assert "output_data_dir" in str(exc_info.value).lower()
+
+    def test_missing_year_boundaries_raises(self, tmp_path):
+        """Raise error when year_boundaries is missing."""
+        config_data = {
+            "input_data_dir": "../../data/hugging_face",
+            "output_data_dir": "../../data/processed",
+            "dataset_name": "di-zhang-fdu/AOPS",
+        }
+        config_file = tmp_path / "config.yaml"
+        config_file.write_text(yaml.dump(config_data))
+
+        with pytest.raises(ConfigError) as exc_info:
+            load_config(config_file, validator=validate_filter_config)
+
+        assert "year_boundaries" in str(exc_info.value).lower()
+
+    def test_missing_train_max_year_raises(self, tmp_path):
+        """Raise error when train_max_year is missing."""
+        config_data = {
+            "input_data_dir": "../../data/hugging_face",
+            "output_data_dir": "../../data/processed",
+            "dataset_name": "di-zhang-fdu/AOPS",
+            "year_boundaries": {
+                "valid_year": 2024,
+                "test_min_year": 2025,
+            },
+        }
+        config_file = tmp_path / "config.yaml"
+        config_file.write_text(yaml.dump(config_data))
+
+        with pytest.raises(ConfigError) as exc_info:
+            load_config(config_file, validator=validate_filter_config)
+
+        assert "train_max_year" in str(exc_info.value).lower()
+
+    def test_missing_valid_year_raises(self, tmp_path):
+        """Raise error when valid_year is missing."""
+        config_data = {
+            "input_data_dir": "../../data/hugging_face",
+            "output_data_dir": "../../data/processed",
+            "dataset_name": "di-zhang-fdu/AOPS",
+            "year_boundaries": {
+                "train_max_year": 2023,
+                "test_min_year": 2025,
+            },
+        }
+        config_file = tmp_path / "config.yaml"
+        config_file.write_text(yaml.dump(config_data))
+
+        with pytest.raises(ConfigError) as exc_info:
+            load_config(config_file, validator=validate_filter_config)
+
+        assert "valid_year" in str(exc_info.value).lower()
+
+    def test_missing_test_min_year_raises(self, tmp_path):
+        """Raise error when test_min_year is missing."""
+        config_data = {
+            "input_data_dir": "../../data/hugging_face",
+            "output_data_dir": "../../data/processed",
+            "dataset_name": "di-zhang-fdu/AOPS",
+            "year_boundaries": {
+                "train_max_year": 2023,
+                "valid_year": 2024,
+            },
+        }
+        config_file = tmp_path / "config.yaml"
+        config_file.write_text(yaml.dump(config_data))
+
+        with pytest.raises(ConfigError) as exc_info:
+            load_config(config_file, validator=validate_filter_config)
+
+        assert "test_min_year" in str(exc_info.value).lower()
+
+    def test_missing_dataset_name_raises(self, tmp_path):
+        """Raise error when dataset_name is missing."""
+        config_data = {
+            "input_data_dir": "../../data/hugging_face",
+            "output_data_dir": "../../data/processed",
+            "year_boundaries": {
+                "train_max_year": 2023,
+                "valid_year": 2024,
+                "test_min_year": 2025,
+            },
+        }
+        config_file = tmp_path / "config.yaml"
+        config_file.write_text(yaml.dump(config_data))
+
+        with pytest.raises(ConfigError) as exc_info:
+            load_config(config_file, validator=validate_filter_config)
+
+        assert "dataset_name" in str(exc_info.value).lower()
+

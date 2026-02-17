@@ -1,0 +1,12 @@
+# Filter di-zhang-fdu/AOPS dataset by year
+# Splits dataset into train/valid/test based on year extracted from links
+
+input_data_dir: "../../data/hugging_face"   # Input: downloaded HuggingFace datasets
+output_data_dir: "../../data/processed"     # Output: filtered JSONL files
+
+dataset_name: "di-zhang-fdu/AOPS"
+
+year_boundaries:
+  train_max_year: 2023    # year <= 2023 -> train
+  valid_year: 2024        # year == 2024 -> valid
+  test_min_year: 2025     # year >= 2025 -> test

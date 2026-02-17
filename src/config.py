@@ -92,3 +92,35 @@ def validate_sampler_config(config: dict[str, Any]) -> None:
 
     if not isinstance(config["sample_size"], int) or config["sample_size"] <= 0:
         raise ConfigError("'sample_size' must be a positive integer")
+
+
+def validate_filter_config(config: dict[str, Any]) -> None:
+    """Validate filter dataset configuration.
+
+    Args:
+        config: The parsed configuration dictionary.
+
+    Raises:
+        ConfigError: If required fields are missing or invalid.
+    """
+    if "input_data_dir" not in config:
+        raise ConfigError("Missing required field: 'input_data_dir'")
+
+    if "output_data_dir" not in config:
+        raise ConfigError("Missing required field: 'output_data_dir'")
+
+    if "dataset_name" not in config:
+        raise ConfigError("Missing required field: 'dataset_name'")
+
+    if "year_boundaries" not in config:
+        raise ConfigError("Missing required field: 'year_boundaries'")
+
+    year_boundaries = config["year_boundaries"]
+    if "train_max_year" not in year_boundaries:
+        raise ConfigError("Missing required field in year_boundaries: 'train_max_year'")
+
+    if "valid_year" not in year_boundaries:
+        raise ConfigError("Missing required field in year_boundaries: 'valid_year'")
+
+    if "test_min_year" not in year_boundaries:
+        raise ConfigError("Missing required field in year_boundaries: 'test_min_year'")
