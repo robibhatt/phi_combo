@@ -19,6 +19,9 @@
 - `tests/scripts/` - Tests for scripts in `scripts/`
 - Test file naming: `test_<module_name>.py`
 
+### data/
+- `data/hugging_face/` - Downloaded Hugging Face datasets (e.g., `nvidia/OpenMathReasoning`)
+
 ## Configuration
 - All user inputs via YAML files
 - YAML files co-located with scripts that use them

@@ -4,5 +4,5 @@
 data_dir: "../../data/hugging_face"  # Relative to project root
 
 datasets:
-  - name: "nvidia/OpenMathReasoning"
+  - name: "di-zhang-fdu/AOPS"
     subset: null  # No config required

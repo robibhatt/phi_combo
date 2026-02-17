@@ -26,3 +26,6 @@ include = ["src*", "scripts*"]
 testpaths = ["tests"]
 python_files = ["test_*.py"]
 python_functions = ["test_*"]
+
+[tool.pyright]
+extraPaths = ["."]

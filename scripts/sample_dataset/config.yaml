@@ -1,0 +1,7 @@
+# Dataset sampling configuration
+# Edit this file to specify which split to sample
+
+data_dir: "../../data/hugging_face"  # Relative to project root
+dataset_name: "di-zhang-fdu/AOPS"
+split: "train"           # One of: cot, tir, genselect, additional_problems
+sample_size: 100       # Number of rows to sample
