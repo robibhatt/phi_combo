@@ -339,3 +339,137 @@ class TestValidateFilterConfig:
 
         assert "dataset_name" in str(exc_info.value).lower()
 
+
+class TestValidateScraperConfig:
+    """Tests for validate_scraper_config function."""
+
+    def test_valid_config_passes(self, tmp_path):
+        """Pass validation with all required fields."""
+        config_data = {
+            "output_dir": "../../data/scraped",
+            "output_filename": "HARP_2025.jsonl",
+            "request_delay_seconds": 2,
+            "retry_count": 10,
+            "retry_backoff_seconds": 60,
+            "contests": [
+                {"name": "AMC_8", "problems": 25},
+                {"name": "AMC_10A", "problems": 25},
+            ],
+        }
+        config_file = tmp_path / "config.yaml"
+        config_file.write_text(yaml.dump(config_data))
+
+        from src.config import validate_scraper_config
+
+        result = load_config(config_file, validator=validate_scraper_config)
+        assert result["output_dir"] == "../../data/scraped"
+        assert len(result["contests"]) == 2
+
+    def test_missing_output_dir_raises(self, tmp_path):
+        """Raise error when output_dir is missing."""
+        config_data = {
+            "output_filename": "HARP_2025.jsonl",
+            "contests": [{"name": "AMC_8", "problems": 25}],
+        }
+        config_file = tmp_path / "config.yaml"
+        config_file.write_text(yaml.dump(config_data))
+
+        from src.config import validate_scraper_config
+
+        with pytest.raises(ConfigError) as exc_info:
+            load_config(config_file, validator=validate_scraper_config)
+        assert "output_dir" in str(exc_info.value).lower()
+
+    def test_missing_output_filename_raises(self, tmp_path):
+        """Raise error when output_filename is missing."""
+        config_data = {
+            "output_dir": "../../data/scraped",
+            "contests": [{"name": "AMC_8", "problems": 25}],
+        }
+        config_file = tmp_path / "config.yaml"
+        config_file.write_text(yaml.dump(config_data))
+
+        from src.config import validate_scraper_config
+
+        with pytest.raises(ConfigError) as exc_info:
+            load_config(config_file, validator=validate_scraper_config)
+        assert "output_filename" in str(exc_info.value).lower()
+
+    def test_missing_contests_raises(self, tmp_path):
+        """Raise error when contests is missing."""
+        config_data = {
+            "output_dir": "../../data/scraped",
+            "output_filename": "HARP_2025.jsonl",
+        }
+        config_file = tmp_path / "config.yaml"
+        config_file.write_text(yaml.dump(config_data))
+
+        from src.config import validate_scraper_config
+
+        with pytest.raises(ConfigError) as exc_info:
+            load_config(config_file, validator=validate_scraper_config)
+        assert "contests" in str(exc_info.value).lower()
+
+    def test_contests_not_list_raises(self, tmp_path):
+        """Raise error when contests is not a list."""
+        config_data = {
+            "output_dir": "../../data/scraped",
+            "output_filename": "HARP_2025.jsonl",
+            "contests": "AMC_8",
+        }
+        config_file = tmp_path / "config.yaml"
+        config_file.write_text(yaml.dump(config_data))
+
+        from src.config import validate_scraper_config
+
+        with pytest.raises(ConfigError) as exc_info:
+            load_config(config_file, validator=validate_scraper_config)
+        assert "list" in str(exc_info.value).lower()
+
+    def test_empty_contests_raises(self, tmp_path):
+        """Raise error when contests is empty."""
+        config_data = {
+            "output_dir": "../../data/scraped",
+            "output_filename": "HARP_2025.jsonl",
+            "contests": [],
+        }
+        config_file = tmp_path / "config.yaml"
+        config_file.write_text(yaml.dump(config_data))
+
+        from src.config import validate_scraper_config
+
+        with pytest.raises(ConfigError) as exc_info:
+            load_config(config_file, validator=validate_scraper_config)
+        assert "empty" in str(exc_info.value).lower()
+
+    def test_contest_missing_name_raises(self, tmp_path):
+        """Raise error when a contest is missing name."""
+        config_data = {
+            "output_dir": "../../data/scraped",
+            "output_filename": "HARP_2025.jsonl",
+            "contests": [{"problems": 25}],
+        }
+        config_file = tmp_path / "config.yaml"
+        config_file.write_text(yaml.dump(config_data))
+
+        from src.config import validate_scraper_config
+
+        with pytest.raises(ConfigError) as exc_info:
+            load_config(config_file, validator=validate_scraper_config)
+        assert "name" in str(exc_info.value).lower()
+
+    def test_contest_missing_problems_raises(self, tmp_path):
+        """Raise error when a contest is missing problems."""
+        config_data = {
+            "output_dir": "../../data/scraped",
+            "output_filename": "HARP_2025.jsonl",
+            "contests": [{"name": "AMC_8"}],
+        }
+        config_file = tmp_path / "config.yaml"
+        config_file.write_text(yaml.dump(config_data))
+
+        from src.config import validate_scraper_config
+
+        with pytest.raises(ConfigError) as exc_info:
+            load_config(config_file, validator=validate_scraper_config)
+        assert "problems" in str(exc_info.value).lower()

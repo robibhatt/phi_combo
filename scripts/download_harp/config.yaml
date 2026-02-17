@@ -1,0 +1,11 @@
+# HARP dataset download configuration
+# Downloads ZIP-compressed JSONL files from GitHub
+
+data_dir: "../../data/github_data"
+dataset_name: "HARP"
+files:
+  - "HARP.jsonl.zip"
+  - "HARP_mcq.jsonl.zip"
+  - "HARP_proof-based.jsonl.zip"
+  - "HARP_raw.jsonl.zip"
+base_url: "https://raw.githubusercontent.com/aadityasingh/HARP/main"

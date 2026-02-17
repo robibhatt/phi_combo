@@ -1,0 +1,20 @@
+output_dir: "../../data/scraped"
+output_filename: "HARP_2025.jsonl"
+request_delay_seconds: 2
+retry_count: 10
+retry_backoff_seconds: 60
+contests:
+  - name: "AMC_8"
+    problems: 25
+  - name: "AMC_10A"
+    problems: 25
+  - name: "AMC_10B"
+    problems: 25
+  - name: "AMC_12A"
+    problems: 25
+  - name: "AMC_12B"
+    problems: 25
+  - name: "AIME_I"
+    problems: 15
+  - name: "AIME_II"
+    problems: 15
