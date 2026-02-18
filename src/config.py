@@ -126,8 +126,8 @@ def validate_filter_config(config: dict[str, Any]) -> None:
         raise ConfigError("Missing required field in year_boundaries: 'test_min_year'")
 
 
-def validate_scraper_config(config: dict[str, Any]) -> None:
-    """Validate scraper configuration for HARP 2025 dataset.
+def validate_harp_combo_config(config: dict[str, Any]) -> None:
+    """Validate HARP combo filter configuration.
 
     Args:
         config: The parsed configuration dictionary.
@@ -135,23 +135,13 @@ def validate_scraper_config(config: dict[str, Any]) -> None:
     Raises:
         ConfigError: If required fields are missing or invalid.
     """
-    if "output_dir" not in config:
-        raise ConfigError("Missing required field: 'output_dir'")
-
-    if "output_filename" not in config:
-        raise ConfigError("Missing required field: 'output_filename'")
-
-    if "contests" not in config:
-        raise ConfigError("Missing required field: 'contests'")
-
-    if not isinstance(config["contests"], list):
-        raise ConfigError("'contests' must be a list")
-
-    if len(config["contests"]) == 0:
-        raise ConfigError("'contests' list cannot be empty")
-
-    for i, contest in enumerate(config["contests"]):
-        if "name" not in contest:
-            raise ConfigError(f"Contest at index {i} missing required field: 'name'")
-        if "problems" not in contest:
-            raise ConfigError(f"Contest at index {i} missing required field: 'problems'")
+    for field in [
+        "input_file",
+        "output_data_dir",
+        "dataset_name",
+        "subject_filter",
+        "train_max_year",
+        "valid_min_year",
+    ]:
+        if field not in config:
+            raise ConfigError(f"Missing required field: '{field}'")

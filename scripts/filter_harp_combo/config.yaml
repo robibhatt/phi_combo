@@ -1,0 +1,11 @@
+# Filter HARP dataset to counting & probability problems, split by year
+# Source: data downloaded via scripts/download_harp/
+
+input_file: "../../data/github_data/HARP/HARP.jsonl"
+output_data_dir: "../../data/processed"
+
+dataset_name: "HARP_combo"
+subject_filter: "counting_and_probability"
+
+train_max_year: 2023    # year <= 2023 -> train
+valid_min_year: 2024    # year >= 2024 -> valid
